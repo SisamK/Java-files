@@ -1,0 +1,95 @@
+import java.util.Random;
+
+
+public class RandomSentenceGenerator {
+
+
+    private static final Random random = new Random();
+    private static final int MAX_RECURSION_LEVEL = 4;
+
+
+    private static final String[] names = {"Aarav", "Ananya", "Arjun", "Ishita", "Rohan"};
+    private static final String[] poems = {"The Road Not Taken", "Ode to a Nightingale", "If", "The Raven", "I Wandered Lonely as a Cloud"};
+    private static final String[] determiners = {"a", "the", "every", "some"};
+    private static final String[] adjectives = {"inspiring", "mysterious", "beautiful", "captivating"};
+    private static final String[] intransitiveVerbs = {"dances", "sings", "shines", "whispers"};
+    private static final String[] transitiveVerbs = {"loves", "hates", "sees", "knows", "looks for", "finds"};
+    private static final String[] conjunctions = {"and", "or", "but", "because"};
+
+
+    public static void main(String[] args) {
+        String sentence = generateSentence(MAX_RECURSION_LEVEL);
+        System.out.println(sentence);
+    }
+
+
+    private static String generateSentence(int recursionLevel) {
+        if (recursionLevel <= 0) {
+            return generateSimpleSentence();
+        }
+        return generateSimpleSentence() + optionalConjunction() + generateSentence(recursionLevel - 1);
+    }
+
+
+    private static String generateSimpleSentence() {
+        return generateNounPhrase() + " " + generateVerbPhrase();
+    }
+
+
+    private static String generateNounPhrase() {
+        String determiner = generateDeterminer();
+        String adjective = optionalAdjective();
+        String name = randomItem(names);
+        String relativeClause = optionalRelativeClause();
+
+
+        // Ensure proper noun phrase structure
+        if (!adjective.isEmpty() && !relativeClause.isEmpty()) {
+            return determiner + " " + adjective + " " + name + relativeClause;
+        } else if (!adjective.isEmpty()) {
+            return determiner + " " + adjective + " " + name;
+        } else if (!relativeClause.isEmpty()) {
+            return determiner + " " + name + relativeClause;
+        } else {
+            return determiner + " " + name;
+        }
+    }
+
+
+    private static String generateVerbPhrase() {
+        if (random.nextBoolean()) {
+            return randomItem(intransitiveVerbs);
+        } else {
+            return randomItem(transitiveVerbs) + " " + generateNounPhrase();
+        }
+    }
+
+
+    private static String optionalAdjective() {
+        return random.nextBoolean() ? randomItem(adjectives) : "";
+    }
+
+
+    private static String optionalRelativeClause() {
+        return random.nextBoolean() ? " who " + generateVerbPhrase() : "";
+    }
+
+
+    private static String optionalConjunction() {
+        return random.nextBoolean() ? " " + randomItem(conjunctions) : "";
+    }
+
+
+    private static String generateDeterminer() {
+        return randomItem(determiners);
+    }
+
+
+    private static String randomItem(String[] array) {
+        return array[random.nextInt(array.length)];
+    }
+}
+
+
+
+
